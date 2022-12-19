@@ -1,0 +1,7 @@
+asyncio
+discord.py
+nest_asyncio
+pynacl
+python-dotenv
+youtube-search-python
+youtube_dl

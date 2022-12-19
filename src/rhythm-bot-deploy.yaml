@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: discord-rhythm-bot-deploy
+  name: discord-rhythm-bot-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-rhythm-bot-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: discord-rhythm-bot-deploy
+    spec:
+      containers:
+      - image: nori/rhythm-bot:1.0
+        name: rhythm-bot
+        resources: {}
+status: {}
