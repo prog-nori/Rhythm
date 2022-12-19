@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rhythm-bot
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  selector:
+    matchLabels:
+      app: rhythm-bot
+  template:
+    metadata:
+      labels: 
+        app: rhythm-bot
+    spec:
+      containers:
+        - name: rhythm-bot-container
+          image: nori/rhythm-bot:1.1
+          env:
+          - name: TOKEN
