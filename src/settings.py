@@ -1,10 +1,12 @@
 import os
-# from os.path import join, dirname
-# from dotenv import load_dotenv
-
-# load_dotenv(verbose=True)
-
-# dotenv_path = join(dirname(__file__), '.env')
-# load_dotenv(dotenv_path)
+import base64
 
 TOKEN = os.environ.get("TOKEN")
+
+def get_token():
+    if TOKEN is not None:
+        decoded_token = base64.b64decode(TOKEN).decode()
+        print('tkn:', decoded_token)
+        return decoded_token
+    else:
+        return None

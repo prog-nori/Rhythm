@@ -78,8 +78,6 @@ async def on_message(message):
         if not message.guild.voice_client.is_playing():
             return
         message.guild.voice_client.pause()
-        await message.channel.send("ほげ")
-        await message.channel.send(current)
         if len(music_queue) > 0:
             play()
         else:
@@ -89,7 +87,7 @@ async def on_message(message):
         embed = Embed(title='Queue', description='以下の動画が予約されています', color=0x06c755)
         if current:
             current_body = f'{current}\n\n'
-            embed.add_field(name='現在再生中の曲よん', value=current_body, inline=False)
+            embed.add_field(name='現在再生中の曲', value=current_body, inline=False)
 
         body = '\n'.join([f'`{i}.` {q}\n' for i, q in enumerate(music_queue, 1)])
 

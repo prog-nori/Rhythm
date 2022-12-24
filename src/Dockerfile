@@ -8,7 +8,6 @@ RUN mkdir -p /home/${APP_USER_NAME}/x264
 RUN mkdir -p /home/${APP_USER_NAME}/x265
 
 COPY ./execute.py /home/$APP_USER_NAME/
-COPY ./id.py /home/$APP_USER_NAME/
 COPY ./util.py /home/$APP_USER_NAME/
 COPY ./settings.py /home/$APP_USER_NAME/
 COPY ./requirements.txt /home/$APP_USER_NAME/
