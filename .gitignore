@@ -2,3 +2,4 @@
 *__pycache__/*
 id.py
 .env
+./k8s/secret-pod.yaml
