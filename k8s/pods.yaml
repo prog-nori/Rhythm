@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhythm-bot-pod
+spec:
+  containers:
+    - name: rhythm-bot-pod-container
+      image: nori/rhythm-bot:1.0
+      ports:
+      - containerPort: 25566

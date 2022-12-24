@@ -22,11 +22,10 @@ spec:
           image: nori/rhythm-bot:1.1
           env:
           - name: TOKEN
-            value: MTA0MDYwMTkzNjM5NjgxMjM4OQ.GO6DSz.uIBtV6vOU43QuvkPKWLDVhyZIGFlDc09cvdSEE
-            # valueFrom:
-            # secretKeyRef:
-            #   name: rhythm-secret
-            #   key: token
+            valueFrom:
+              secretKeyRef:
+                name: rhythm-secret
+                key: token
 ---
 apiVersion: v1
 kind: Service
