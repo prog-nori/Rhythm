@@ -12,7 +12,7 @@ from discord import (
     Intents
 )
 from settings import TOKEN
-from util import get_movie_id_from_youtube_url, UrlParseError, Info
+from .util import get_movie_id_from_youtube_url, UrlParseError, DBManager
 
 nest_asyncio.apply()
 
@@ -23,6 +23,8 @@ intents = Intents.default()  # デフォルトのIntentsオブジェクトを生
 intents.typing = True  # typingを受け取らないように
 intents.message_content=True
 client = Client(intents=intents)
+server_id = '858908196466982952-1064897230626111579'.split('-')[0]
+db = DBManager(server_id)
 
 # loop = asyncio.get_event_loop()
 
@@ -52,7 +54,7 @@ async def on_message(message):
         src = FFmpegPCMAudio(audio.url)
         message.guild.voice_client.play(src, after=lambda e:play())
     
-    if msg[:5] == '!play' or msg[:2] == '!p':
+    if msg[:5] == '?play' or msg[:2] == '?p':
 
         if message.author.voice is None:
             await client.send_message(message.channel ,'ボイスチャンネルに参加してからコマンドを打ってください。')
@@ -74,7 +76,7 @@ async def on_message(message):
             current = None
         return
 
-    if msg == '!fs' or msg == '!skip':
+    if msg == '?fs' or msg == '?skip':
         if not message.guild.voice_client.is_playing():
             return
         message.guild.voice_client.pause()
@@ -83,7 +85,7 @@ async def on_message(message):
         else:
             current = None
 
-    if msg == '!q' or msg == '!queue':
+    if msg == '?q' or msg == '?queue':
         embed = Embed(title='Queue', description='以下の動画が予約されています', color=0x06c755)
         if current:
             current_body = f'{current}\n\n'
@@ -95,18 +97,18 @@ async def on_message(message):
         await message.channel.send(embed=embed)
     
     # 再生中の音楽を停止させる
-    if msg == '!stop':
+    if msg == '?stop':
         if message.guild.voice_client.is_playing():
             await message.guild.voice_client.pause()
             return
     
-    if msg == '!resume':
+    if msg == '?resume':
         if not message.guild.voice_client.is_playing():
             await message.guild.voice_client.resume()
             return
 
     # botをボイスチャットから切断させる
-    if msg == '!disconnect' or msg == '!d':
+    if msg == '?disconnect' or msg == '?d':
         if message.guild.voice_client is None:
             await message.channel.send("接続していません。")
             # queueをリセットする

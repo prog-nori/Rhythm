@@ -19,7 +19,10 @@ spec:
     spec:
       containers:
         - name: rhythm-bot-container
-          image: nori/rhythm-bot:1.1
+          # image: nori/rhythm-bot:1.0
+          image: ksunori/rhythm-bot:1.0
+          imagePullPolicy: IfNotPresent
+          # imagePullPolicy: Never
           env:
           - name: TOKEN
             valueFrom:
@@ -39,3 +42,5 @@ spec:
     app: rhythm-bot
   ports:
   - port: 9000
+    protocol: TCP
+    targetPort: 9000

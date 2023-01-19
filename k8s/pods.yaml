@@ -5,6 +5,8 @@ metadata:
 spec:
   containers:
     - name: rhythm-bot-pod-container
-      image: nori/rhythm-bot:1.0
+      image: ksunori/rhythm-bot:1.0
+      imagePullPolicy: IfNotPresent
+      # imagePullPolicy: Never
       ports:
       - containerPort: 25566

@@ -1,9 +1,106 @@
 #! /usr/bin/env python3
 #  -*- coding: utf-8 -*-
 
+import MySQLdb
 import urllib.parse
 from youtubesearchpython import Video, VideosSearch
 # from pprint import pprint
+
+NOT_PLAYING = 'NOT_PLAYING'
+PLAYING = 'PLAYING'
+PLAYED = 'PLAYED'
+
+class DBManager:
+    def __init__(self, server):
+        self.connect()
+        self.server = server
+        pass
+
+    def connect(self):
+        """
+        DBに接続
+        """
+        self.connection = MySQLdb.connect(
+            host='mysql-svc',
+            port=3306,
+            user='root',
+            passwd='mysql',
+            db='rhythmdb')
+        self.cursor = self.connection.cursor()
+        return
+
+    def add(self, url, author):
+        """
+        キューを追加
+        """
+        query = f"INSERT INTO queue (url, server, author, status) VALUES ('{url}', '{self.server}', '{author}', '{NOT_PLAYING}')"
+        self.cursor.execute(query)
+        self.connection.commit()
+        return
+
+    def play(self):
+        """
+        ステータスを「再生中」に
+        """
+        # 再生中のものがあるか確認
+        def is_playing():
+            query = f"SELECT count(1) FROM queue WHERE server='{self.server}' AND status='{PLAYING}'"
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
+            return int(rows[0][0]) > 0
+
+        # 次に再生すべき、未使用のキューのidとurlを1つ拾ってくる
+        def get_next_queue():
+            query = f"SELECT id, url FROM queue WHERE server='{self.server}' AND status='{NOT_PLAYING}' ORDER BY id ASC LIMIT 1"
+            self.cursor.execute(query)
+            rows = self.cursor.fetchall()
+            return rows
+
+        # 次に再生すべき動画のステータスをPLAYINGに変更する
+        def update(id):
+            query = f"UPDATE queue SET status='{PLAYING}' WHERE id={id}"
+            self.cursor.execute(query)
+            self.connection.commit()
+            return
+
+        # 再生中ではないことが前提
+        if not is_playing():
+            rows = get_next_queue()
+            # 未使用のキューが拾って来れなかったら、Noneを返すA
+            if rows is not None and isinstance(rows, list) and len(rows) == 2:
+                id, url = rows
+                update(id)
+                return url
+        return None
+
+    def played(self, id):
+        """
+        ステータスを「再生終了」に
+        """
+        query = f"UPDATE queue SET status='{PLAYED}' WHERE id={id}"
+        self.cursor.execute(query)
+        self.connection.commit()
+        return
+
+    # TODO:
+    # チャンネルからdisconnectしたとき、queueを全てplayedにする
+    def played(self):
+        """
+        ステータスをすべて「再生終了」に
+        """
+        query = f"UPDATE queue SET status='{PLAYED}' WHERE server='{self.server}'"
+        self.cursor.execute(query)
+        self.connection.commit()
+        return
+
+    def disconnect(self):
+        """
+        DBから切断
+        """
+        # 接続を閉じる
+        self.connection.close()
+        return
+
 
 class Info:
     def __init__(self, video=None, author='anonimous'):
